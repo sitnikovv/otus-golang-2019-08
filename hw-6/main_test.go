@@ -30,6 +30,12 @@ func TestGlist_PushBack(t *testing.T) {
 	if data.first.Value() != 2 || data.last.Value() != 3 || data.Len() != 3 {
 		t.Fatalf("Fail insert new item at end")
 	}
+
+	dataTest := Glist{}
+	dataTest.PushBack("A")
+	if dataTest.first.Value() != "A" || dataTest.last.Value() != "A" || dataTest.Len() != 1 {
+		t.Fatalf("Fail insert new item at end")
+	}
 }
 
 func TestGlist_First(t *testing.T) {
@@ -101,6 +107,15 @@ func TestGlist_Get(t *testing.T) {
 
 func TestGlist_Remove(t *testing.T) {
 
+	//	Удаляем единственный элемент
+	dataTest := Glist{}
+	dataTest.PushFront("A")
+	if result, err := dataTest.Remove(0); err != nil {
+		require.FailNow(t, "Fail remove last element, reason: "+err.Error())
+	} else {
+		require.Equal(t, result.Value(), "A", "Remove incorrect element: waiting A, getting %v", result.Value())
+	}
+
 	//	Удаляем последний элемент
 	if result, err := data.Remove(9); err != nil {
 		require.FailNow(t, "Fail remove last element, reason: "+err.Error())
@@ -131,5 +146,26 @@ func TestGlist_Remove(t *testing.T) {
 	} else {
 		require.Equal(t, result.Value(), 8, "Remove incorrect element: waiting 8, getting %v", result.Value())
 	}
+}
+
+func TestGlist_Len(t *testing.T) {
 	require.Equal(t, data.Len(), uint(6), "Remove incorrect resize after remove: waiting 8, getting %v", data.Len())
 }
+
+func TestList_Value(t *testing.T) {
+	result,_ := data.Get(0)
+	require.Equal(t, result.Value(), 1, "Remove incorrect resize after remove: waiting 1, getting %v", result.Value())
+}
+
+func TestList_Next(t *testing.T) {
+	result,_ := data.Get(0)
+	result, _ = result.Next()
+	require.Equal(t, result.Value(), 3, "Remove incorrect resize after remove: waiting 3, getting %v", result.Value())
+}
+
+func TestList_Prev(t *testing.T) {
+	result,_ := data.Get(3)
+	result, _ = result.Prev()
+	require.Equal(t, result.Value(), 4, "Remove incorrect resize after remove: waiting 4, getting %v", result.Value())
+}
+
