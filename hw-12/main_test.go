@@ -58,6 +58,13 @@ func TestSetEnvironments(t *testing.T) {
 	}
 }
 
+func TestSetEnvironmentsForCmd(t *testing.T) {
+	result := SetEnvironmentsForCmd(map[string]string{"MY_TEST_VAR": "test_value", "MY_TEST_VAR1": "test_value1"})
+	require.Equal(t, len(result), 2, "Incorrect environment slice size: waiting 2, getting %v", len(result))
+	require.Equal(t, result[0], "MY_TEST_VAR=test_value", "Incorrect environment value: waiting 'MY_TEST_VAR=test_value', getting '%v'", result[0])
+	require.Equal(t, result[1], "MY_TEST_VAR1=test_value1", "Incorrect environment value: waiting 'MY_TEST_VAR1=test_value1', getting '%v'", result[0])
+}
+
 func TestUsage(t *testing.T) {
 	text := Usage()
 	require.NotEqual(t, len(text), 0, "WTF???")

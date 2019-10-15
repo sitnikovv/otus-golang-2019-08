@@ -25,14 +25,15 @@ func main() {
 		log.Fatalf("Error read directiry, reason: %s", err)
 	}
 
-	//	Выставляем переменные окружения, в случае ошибки сообщаем причину и выходим
-	if err = SetEnvironments(data); err != nil {
-		log.Fatalf("Cannot set environments, reason: %s", err)
-	}
+	////	Выставляем переменные окружения, в случае ошибки сообщаем причину и выходим
+	//if err = SetEnvironments(data); err != nil {
+	//	log.Fatalf("Cannot set environments, reason: %s", err)
+	//}
 
 	//	Запускаем указанную программу, в случае ошибки запуска сообщаем причину и выходим. Дожидаться пока отработает - не будем, не царское это дело
 	program := exec.Command(args[1], args[2:]...)
 	program.Stdout = os.Stdout
+	program.Env = SetEnvironmentsForCmd(data)
 	if err = program.Start(); err != nil {
 		log.Fatalf("Unable to start program %s with arguments %s, reason: %s", args[1], strings.Join(args[2:], " "), err)
 	}
@@ -64,6 +65,15 @@ func SetEnvironments(data map[string]string) error {
 		}
 	}
 	return nil
+}
+
+//	Выставляем переменные окружения из мапы с данными
+func SetEnvironmentsForCmd(data map[string]string) []string {
+	result := make([]string, 0, len(data))
+	for key, value := range data {
+		result = append(result, key + "=" + value)
+	}
+	return result
 }
 
 //	Возврат текста инструкции
